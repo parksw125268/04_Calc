@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator"> <!--애니메이션이 동작할때 똑같은 속도가 아니라 약간 다른속도로 움직이도록. -->
+
+    <!--오른쪽 끝에있다가 원래자리로 돌아온다. -->
+    <!--0.5초당안 일어남 -->
+    <!--반복횟수. 0번 -->
+    <!--애니메이션이 끝난 뒤 그 위치에 그대로 놔둘건지. true 놔둠. -->
+    <translate
+        android:fromXDelta="100%p"
+        android:toXDelta="0%p"
+        android:duration="500"
+        android:repeatCount="0"
+        android:fillAfter="true"/>
+
+</set>

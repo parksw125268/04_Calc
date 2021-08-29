@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ibc.android.demo.myreceiver">
+    <!--
+        권한 설정 (위험한 권한은 앱이 실행되면 사용자에게 한번 더 허락을 받는 코드를 작성해야한다.
+        그런데 지금한는 sms권한은 위험권한으로 여기에도 써주고 java코드에도 작성해줘서 사용자가 권한 허용 버튼을 눌러야 허용되도록 해야한다.)
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyReceiver">
+        <activity android:name=".SmsActivity"></activity>
+
+        <receiver
+            android:name=".SmsReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter> <!-- 어떤 intent가 왔을때 내가 원하는것만 필터로 걸러낸다. -->
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" /> <!-- 이 액션정보가 메세지올때 전달되는 intent안에 액션정보와 같다. -->
+            </intent-filter> <!-- 그래서 메세지가 오면 여기로 던져준다. 그러면 java파일에 OnReceive가 실행됨. -->
+        </receiver>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

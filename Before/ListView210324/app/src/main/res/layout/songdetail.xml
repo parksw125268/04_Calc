@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="160dp"
+        android:layout_height="204dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="252dp"
+        android:src="@drawable/abc_btn_radio_to_on_mtrl_015" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="113dp"
+        android:layout_height="88dp"
+        android:layout_alignParentRight="true"
+        android:text="Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="105dp"
+        android:layout_height="80dp"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="-2dp"
+        android:layout_marginBottom="-1dp"
+        android:text="Artist"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#000" />
+
+
+    출처: https://bitsoul.tistory.com/95 [Happy Programmer~]
+
+
+
+
+</RelativeLayout>
