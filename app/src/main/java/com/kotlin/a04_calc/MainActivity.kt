@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import kotlin.NumberFormatException
 
 class MainActivity : AppCompatActivity() {
     private val expressionTextView : TextView by lazy {
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         expressionTextView.append(number)
-        //TODO resultTextView에 실시간으로 결과 넣기 .
+        resultTextView.text = calculatreExpression()
     }
     private fun opertorButtonClicked(operator : String){
         if (expressionTextView.text.isEmpty()) {
@@ -90,12 +91,68 @@ class MainActivity : AppCompatActivity() {
         expressionTextView.text = ssb
     }
     fun clearButtonClicked(v : View){
+        expressionTextView.text = ""
+        resultTextView.text = ""
+        hasOperator = false
+        lastIsOperator = false
 
     }
     fun historyButtonClicked(v : View){
 
     }
-    fun resultButtonClicked(v : View){
+    fun closeHistroyButtonClicked(v : View){
 
+    }fun historyClearButtonClicked(v : View){
+
+    }
+    fun resultButtonClicked(v : View){
+        val expressionTexts = expressionTextView.text.split(" ")
+        if (expressionTextView.text.isEmpty() || expressionTexts.size == 1){
+            return
+        }else if (expressionTexts.size != 3 && hasOperator){
+            Toast.makeText(this,"아직 완성되지 않은 수식입니다.",Toast.LENGTH_SHORT).show()
+            return
+        }else if (expressionTexts[0].isNumber().not() || expressionTexts[2].isNumber().not()){ //String.isNumber라는 함수가 없어서 확장함수 만듬.
+            Toast.makeText(this,"오류가 발생하였습니다..",Toast.LENGTH_SHORT).show()
+            return
+        }
+        //계산, 계산 결과 저장하기
+        val expressionText = expressionTextView.text.toString()
+        val resultText = calculatreExpression()
+
+        resultTextView.text = "${expressionTextView.text} = "
+        expressionTextView.text = resultText
+        lastIsOperator = false
+        hasOperator =  false
+    }
+    private fun calculatreExpression():String{
+        val expressionText = expressionTextView.text.split(" ")
+        if(hasOperator.not() || expressionText.size != 3){
+            return ""
+        }else if (expressionText[0].isNumber().not() || expressionText[2].isNumber().not()){ //String.isNumber라는 함수가 없어서 확장함수 만듬.
+            return ""
+        }
+        val exp1= expressionText[0].toBigInteger()
+        val exp2= expressionText[2].toBigInteger()
+        val op = expressionText[1]
+        return when(op){
+            "+" -> (exp1 + exp2).toString()
+            "-" -> (exp1 - exp2).toString()
+            "*" -> (exp1 * exp2).toString()
+            "/" -> (exp1 / exp2).toString()
+            "%" -> (exp1 % exp2).toString()
+            else -> ""
+
+        }
+
+    }
+}
+//String 확장 함수
+fun String.isNumber():Boolean{
+    try {
+        this.toBigInteger()
+        return true // 숫자로 바꿨는데 에러 안나면 int
+    }catch (e: NumberFormatException){
+        return false
     }
 }
