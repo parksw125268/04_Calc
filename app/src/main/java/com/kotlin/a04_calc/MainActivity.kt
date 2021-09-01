@@ -8,6 +8,8 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import kotlin.NumberFormatException
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +19,12 @@ class MainActivity : AppCompatActivity() {
     private val resultTextView : TextView by lazy {
         findViewById<TextView>(R.id.resultTextView)
     }
+    private val historyLayout : View by lazy {
+        findViewById<View>(R.id.histroyLayout)
+    }
+    private val historyLinearLayout : View by lazy{
+        findViewById<View>(R.id.historyLinearLayout)
+    }
     var lastIsOperator = false //맨마지막이 operator인지
     var hasOperator = false//이미 연산자를 입력했는지
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         expressionTextView
         resultTextView
-
-
     }
     fun buttonClicked(v : View){
         when(v.id){
@@ -98,12 +104,12 @@ class MainActivity : AppCompatActivity() {
 
     }
     fun historyButtonClicked(v : View){
-
+        historyLayout.isVisible = false
     }
     fun closeHistroyButtonClicked(v : View){
+        historyLayout.isVisible = true
 
     }fun historyClearButtonClicked(v : View){
-
     }
     fun resultButtonClicked(v : View){
         val expressionTexts = expressionTextView.text.split(" ")
