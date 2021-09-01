@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.room.Room
+import com.kotlin.a04_calc.model.History
 import kotlin.NumberFormatException
 
 class MainActivity : AppCompatActivity() {
@@ -22,16 +26,28 @@ class MainActivity : AppCompatActivity() {
     private val historyLayout : View by lazy {
         findViewById<View>(R.id.histroyLayout)
     }
-    private val historyLinearLayout : View by lazy{
-        findViewById<View>(R.id.historyLinearLayout)
+    private val historyLinearLayout : LinearLayout by lazy{
+        findViewById<LinearLayout>(R.id.historyLinearLayout)
     }
+
     var lastIsOperator = false //맨마지막이 operator인지
     var hasOperator = false//이미 연산자를 입력했는지
+
+    lateinit var db: AppDataBase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        db = Room.databaseBuilder(
+                applicationContext,
+                AppDataBase::class.java,
+                "historyDB"
+        ).build()
+
         expressionTextView
         resultTextView
+
     }
     fun buttonClicked(v : View){
         when(v.id){
@@ -104,12 +120,29 @@ class MainActivity : AppCompatActivity() {
 
     }
     fun historyButtonClicked(v : View){
-        historyLayout.isVisible = false
+        historyLayout.isVisible = true
+        historyLinearLayout.removeAllViews() //리니어  레이아웃 안에 있는 모든 뷰들 삭제
+        Thread(Runnable {           // 최신순으로 뒤집음.
+            db.historyDao().getAll().reversed().forEach {
+                runOnUiThread {
+                    val historyView = LayoutInflater.from(this).inflate(R.layout.history_row,null, false)
+                    historyView.findViewById<TextView>(R.id.expressionTextView).text = it.expression
+                    historyView.findViewById<TextView>(R.id.resultTextView).text = "= ${it.result}"
+
+                    historyLinearLayout.addView(historyView)
+                }
+
+            }
+        }).start()
     }
     fun closeHistroyButtonClicked(v : View){
-        historyLayout.isVisible = true
+        historyLayout.isVisible = false
 
     }fun historyClearButtonClicked(v : View){
+        historyLinearLayout.removeAllViews()
+        Thread(Runnable { //db에서 모두 삭제
+            db.historyDao().deleteAll()
+        }).start()
     }
     fun resultButtonClicked(v : View){
         val expressionTexts = expressionTextView.text.split(" ")
@@ -125,6 +158,11 @@ class MainActivity : AppCompatActivity() {
         //계산, 계산 결과 저장하기
         val expressionText = expressionTextView.text.toString()
         val resultText = calculatreExpression()
+
+       //db저장
+        Thread(Runnable {                         //ui는 pk이므로 자동으로 들어가는듯?
+            db.historyDao().insertHistory(History(null,expressionText,resultText))
+        }).start()
 
         resultTextView.text = "${expressionTextView.text} = "
         expressionTextView.text = resultText
